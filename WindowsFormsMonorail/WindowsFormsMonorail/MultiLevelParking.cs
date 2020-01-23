@@ -27,7 +27,7 @@ namespace WindowsFormsMonorail
             }
         }
 
-        public bool SaveData(string filename)
+        public void SaveData(string filename)
         {
             if (File.Exists(filename))
             {
@@ -41,29 +41,26 @@ namespace WindowsFormsMonorail
                     fs.WriteLine("Level");
                     for (int i = 0; i < countPlaces; i++)
                     {
-                        var train = level[i];
-                        if (train != null)
+                        try
                         {
-                            if (train.GetType().Name == "Locomotive")
-                            {
+                            var train = level[i];
+                            if (train?.GetType().Name == "Locomotive")
                                 fs.WriteLine($"{i}:Locomotive:" + train);
-                            }
-                            if (train.GetType().Name == "Monorail")
-                            {
+                            if (train?.GetType().Name == "Monorail")
                                 fs.WriteLine($"{i}:Monorail:" + train);
-                            }
                         }
+
+                        finally { }
                     }
                 }
             }
-            return true;
         }
 
-        public bool LoadData(string filename)
+        public void LoadData(string filename)
         {
             if (!File.Exists(filename))
             {
-                return false;
+                throw new FileNotFoundException();
             }
             string buff = "";
             using (StreamReader fs = new StreamReader(File.OpenRead(filename)))
@@ -77,7 +74,7 @@ namespace WindowsFormsMonorail
                     parkingStages = new List<Parking<ITransport>>(countLevel);
                 }
                 else
-                    return false;
+                    throw new Exception("Неверный формат файла");
                 int count = -1;
                 while (!fs.EndOfStream)
                 {
@@ -101,7 +98,6 @@ namespace WindowsFormsMonorail
                     }
                 }
             }
-            return true;
         }
 
         public Parking<ITransport> this[int ind]

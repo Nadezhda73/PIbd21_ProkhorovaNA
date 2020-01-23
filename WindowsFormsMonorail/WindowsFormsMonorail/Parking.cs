@@ -33,7 +33,7 @@ namespace WindowsFormsMonorail
         {
             if (p._places.Count == p._maxCount)
             {
-                return -1;
+                throw new ParkingOverflowException();
             }
             for (int i = 0; i < p._maxCount; i++)
             {
@@ -54,7 +54,7 @@ namespace WindowsFormsMonorail
                 p._places.Remove(index);
                 return train;
             }
-            return null;
+            throw new ParkingNotFoundException(index);
         }
 
         private bool CheckFreePlace(int index)
@@ -95,7 +95,8 @@ namespace WindowsFormsMonorail
                 {
                     return _places[ind];
                 }
-                return null;
+                else
+                    return null;
             }
             set
             {
@@ -104,6 +105,8 @@ namespace WindowsFormsMonorail
                     _places.Add(ind, value);
                     _places[ind].SetPosition(5 + ind / 5 * _placeSizeWidth + 5, ind % 5 * _placeSizeHeight + 15, PictureWidth, PictureHeight);
                 }
+                else
+                    throw new ParkingOccupiedPlaceException(ind);
             }
         }
     }

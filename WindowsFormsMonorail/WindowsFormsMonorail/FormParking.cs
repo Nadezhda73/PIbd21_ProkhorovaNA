@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using NLog;
 
 namespace WindowsFormsMonorail
 {
@@ -15,13 +16,17 @@ namespace WindowsFormsMonorail
         MultiLevelParking parking;
 
         FormMonorailConfig form;
+
         private const int countLevel = 5;
+
+        private Logger logger;
+
         public FormParking()
         {
             InitializeComponent();
-            parking = new MultiLevelParking(countLevel, pictureBoxParking.Width,
-           pictureBoxParking.Height);
-            //заполнение listBox
+            logger = LogManager.GetCurrentClassLogger();
+            parking = new MultiLevelParking(countLevel, pictureBoxParking.Width, pictureBoxParking.Height);
+
             for (int i = 0; i < countLevel; i++)
             {
                 listBoxLevels.Items.Add("Уровень " + (i + 1));
@@ -85,33 +90,38 @@ namespace WindowsFormsMonorail
             }
         }
 
-
-
         private void buttonTake_Click(object sender, EventArgs e)
         {
             if (listBoxLevels.SelectedIndex > -1)
             {
                 if (maskedTextBoxParking.Text != "")
                 {
-                    var train = parking[listBoxLevels.SelectedIndex] -
-                   Convert.ToInt32(maskedTextBoxParking.Text);
-                    if (train != null)
+                    try
                     {
-                        Bitmap bmp = new Bitmap(pictureBoxTake.Width,
-                       pictureBoxTake.Height);
+                        var train = parking[listBoxLevels.SelectedIndex] - Convert.ToInt32(maskedTextBoxParking.Text);
+
+                        Bitmap bmp = new Bitmap(pictureBoxTake.Width, pictureBoxTake.Height);
                         Graphics gr = Graphics.FromImage(bmp);
-                        train.SetPosition(5, 5, pictureBoxTake.Width,
-                       pictureBoxTake.Height);
+                        train.SetPosition(5, 5, pictureBoxTake.Width, pictureBoxTake.Height);
                         train.DrawMonorail(gr);
+                        logger.Info($"Изъят поезд {train.ToString()} с места {maskedTextBoxParking.Text}");
                         pictureBoxTake.Image = bmp;
+                        Draw();
                     }
-                    else
+
+                    catch (ParkingNotFoundException ex)
                     {
-                        Bitmap bmp = new Bitmap(pictureBoxTake.Width,
-                       pictureBoxTake.Height);
+                        logger.Warn(ex.Message);
+                        MessageBox.Show(ex.Message, "Не найдено", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Bitmap bmp = new Bitmap(pictureBoxTake.Width, pictureBoxTake.Height);
                         pictureBoxTake.Image = bmp;
                     }
-                    Draw();
+
+                    catch (Exception ex)
+                    {
+                        logger.Warn(ex.Message);
+                        MessageBox.Show(ex.Message, "Неизвестная ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
             }
         }
@@ -132,14 +142,21 @@ namespace WindowsFormsMonorail
         {
             if (train != null && listBoxLevels.SelectedIndex > -1)
             {
-                int place = parking[listBoxLevels.SelectedIndex] + train;
-                if (place > -1)
+                try
                 {
+                    int place = parking[listBoxLevels.SelectedIndex] + train;
                     Draw();
+                    logger.Info($"Поезд {train.ToString()} помещен на место {place}");
                 }
-                else
+                catch (ParkingOverflowException ex)
                 {
-                    MessageBox.Show("Не удалось поставить");
+                    logger.Warn(ex.Message);
+                    MessageBox.Show(ex.Message, "Переполнение", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                catch (Exception ex)
+                {
+                    logger.Warn(ex.Message);
+                    MessageBox.Show(ex.Message, "Неизвестная ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
@@ -148,13 +165,16 @@ namespace WindowsFormsMonorail
         {
             if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                if (parking.SaveData(saveFileDialog.FileName))
+                try
                 {
+                    parking.SaveData(saveFileDialog.FileName);
                     MessageBox.Show("Сохранение прошло успешно", "Результат", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    logger.Info("Сохранено в файл " + saveFileDialog.FileName);
                 }
-                else
+                catch (Exception ex)
                 {
-                    MessageBox.Show("Не сохранилось", "Результат", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    logger.Warn(ex.Message);
+                    MessageBox.Show(ex.Message, "Неизвестная ошибка при сохранении", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
@@ -163,13 +183,22 @@ namespace WindowsFormsMonorail
         {
             if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                if (parking.LoadData(openFileDialog.FileName))
+                try
                 {
+                    parking.LoadData(openFileDialog.FileName);
                     MessageBox.Show("Загрузили", "Результат", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    logger.Info("Загружено из файла " + openFileDialog.FileName);
                 }
-                else
+
+                catch (ParkingOccupiedPlaceException ex)
                 {
-                    MessageBox.Show("Не загрузили", "Результат", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    logger.Warn(ex.Message);
+                    MessageBox.Show(ex.Message, "Занятое место", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                catch (Exception ex)
+                {
+                    logger.Warn(ex.Message);
+                    MessageBox.Show(ex.Message, "Неизвестная ошибка при загрузке", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 Draw();
             }
