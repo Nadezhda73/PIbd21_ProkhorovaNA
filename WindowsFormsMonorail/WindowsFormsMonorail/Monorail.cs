@@ -35,7 +35,7 @@ namespace WindowsFormsMonorail
 
             if (Window)
             {
-                Brush window = new SolidBrush(MainColor);
+                Brush window = new SolidBrush(DopColor);
                 g.FillRectangle(window, _startPosX, _startPosY + 10, 20, 20);
                 g.FillRectangle(window, _startPosX + 40, _startPosY + 10, 20, 20);
                 g.DrawRectangle(pen, _startPosX, _startPosY + 10, 90, 20);
@@ -44,10 +44,14 @@ namespace WindowsFormsMonorail
 
             if (SideStrip)
             {
-                Brush strip = new SolidBrush(MainColor);
+                Brush strip = new SolidBrush(DopColor);
                 g.FillRectangle(strip, _startPosX, _startPosY + 35, 90, 10);
                 g.DrawRectangle(pen, _startPosX, _startPosY + 35, 90, 10);
             }
+        }
+        public void SetDopColor(Color color)
+        {
+            DopColor = color;
         }
     }
 }
