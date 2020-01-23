@@ -7,7 +7,7 @@ using System.Drawing;
 
 namespace WindowsFormsMonorail
 {
-    public class Locomotive : Vehicle
+    public class Locomotive : Vehicle, IComparable<Locomotive>, IEquatable<Locomotive>
     {
         protected const int monorailWidth = 100;
         protected const int monorailHeight = 60;
@@ -82,6 +82,72 @@ namespace WindowsFormsMonorail
         public override string ToString()
         {
             return MaxSpeed + ";" + Weight + ";" + MainColor.Name;
+        }
+
+        public int CompareTo(Locomotive other)
+        {
+            if (other == null)
+            {
+                return 1;
+            }
+            if (MaxSpeed != other.MaxSpeed)
+            {
+                return MaxSpeed.CompareTo(other.MaxSpeed);
+            }
+            if (Weight != other.Weight)
+            {
+                return Weight.CompareTo(other.Weight);
+            }
+            if (MainColor != other.MainColor)
+            {
+                MainColor.Name.CompareTo(other.MainColor.Name);
+            }
+            return 0;
+        }
+
+        public bool Equals(Locomotive other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+            if (GetType().Name != other.GetType().Name)
+            {
+                return false;
+            }
+            if (MaxSpeed != other.MaxSpeed)
+            {
+                return false;
+            }
+            if (Weight != other.Weight)
+            {
+                return false;
+            }
+            if (MainColor != other.MainColor)
+            {
+                return false;
+            }
+            return true;
+        }
+
+
+        public override bool Equals(Object obj)
+        {
+            if (obj == null) { return false; }
+
+            if (!(obj is Locomotive boatObj))
+            {
+                return false;
+            }
+            else
+            {
+                return Equals(boatObj);
+            }
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
     }
 }

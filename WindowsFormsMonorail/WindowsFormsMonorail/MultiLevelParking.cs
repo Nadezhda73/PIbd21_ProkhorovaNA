@@ -7,7 +7,7 @@ using System.IO;
 
 namespace WindowsFormsMonorail
 {
-    public class MultiLevelParking
+    class MultiLevelParking
     {
         List<Parking<ITransport>> parkingStages;
 
@@ -39,18 +39,18 @@ namespace WindowsFormsMonorail
                 foreach (var level in parkingStages)
                 {
                     fs.WriteLine("Level");
-                    for (int i = 0; i < countPlaces; i++)
+                    foreach (ITransport train in level)
                     {
-                        try
+                        if (train.GetType().Name == "Locomotive")
                         {
-                            var train = level[i];
-                            if (train?.GetType().Name == "Locomotive")
-                                fs.WriteLine($"{i}:Locomotive:" + train);
-                            if (train?.GetType().Name == "Monorail")
-                                fs.WriteLine($"{i}:Monorail:" + train);
+                            fs.Write(level.GetKey + ":Locomotive:");
                         }
 
-                        finally { }
+                        if (train.GetType().Name == "Monorail")
+                        {
+                            fs.Write(level.GetKey + ":Monorail:");
+                        }
+                        fs.WriteLine(train);
                     }
                 }
             }
@@ -110,6 +110,11 @@ namespace WindowsFormsMonorail
                 }
                 return null;
             }
+        }
+
+        public void Sort()
+        {
+            parkingStages.Sort();
         }
     }
 }
