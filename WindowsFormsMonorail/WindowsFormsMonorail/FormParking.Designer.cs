@@ -29,8 +29,6 @@
         private void InitializeComponent()
         {
             this.pictureBoxParking = new System.Windows.Forms.PictureBox();
-            this.ParkingMonorail = new System.Windows.Forms.Button();
-            this.ParkingLocomotive = new System.Windows.Forms.Button();
             this.groupBoxParking = new System.Windows.Forms.GroupBox();
             this.pictureBoxTake = new System.Windows.Forms.PictureBox();
             this.buttonTake = new System.Windows.Forms.Button();
@@ -38,6 +36,7 @@
             this.labelParking = new System.Windows.Forms.Label();
             this.listBoxLevels = new System.Windows.Forms.ListBox();
             this.labelLevels = new System.Windows.Forms.Label();
+            this.buttonSelectTrain = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxParking)).BeginInit();
             this.groupBoxParking.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxTake)).BeginInit();
@@ -47,29 +46,9 @@
             // 
             this.pictureBoxParking.Location = new System.Drawing.Point(12, 12);
             this.pictureBoxParking.Name = "pictureBoxParking";
-            this.pictureBoxParking.Size = new System.Drawing.Size(762, 426);
+            this.pictureBoxParking.Size = new System.Drawing.Size(769, 426);
             this.pictureBoxParking.TabIndex = 0;
             this.pictureBoxParking.TabStop = false;
-            // 
-            // ParkingMonorail
-            // 
-            this.ParkingMonorail.Location = new System.Drawing.Point(879, 169);
-            this.ParkingMonorail.Name = "ParkingMonorail";
-            this.ParkingMonorail.Size = new System.Drawing.Size(93, 44);
-            this.ParkingMonorail.TabIndex = 1;
-            this.ParkingMonorail.Text = "Припарковать монорельс";
-            this.ParkingMonorail.UseVisualStyleBackColor = true;
-            this.ParkingMonorail.Click += new System.EventHandler(this.ParkingMonorail_Click);
-            // 
-            // ParkingLocomotive
-            // 
-            this.ParkingLocomotive.Location = new System.Drawing.Point(780, 169);
-            this.ParkingLocomotive.Name = "ParkingLocomotive";
-            this.ParkingLocomotive.Size = new System.Drawing.Size(93, 44);
-            this.ParkingLocomotive.TabIndex = 2;
-            this.ParkingLocomotive.Text = "Припарковать локомотив";
-            this.ParkingLocomotive.UseVisualStyleBackColor = true;
-            this.ParkingLocomotive.Click += new System.EventHandler(this.ParkingLocomotive_Click);
             // 
             // groupBoxParking
             // 
@@ -77,12 +56,12 @@
             this.groupBoxParking.Controls.Add(this.buttonTake);
             this.groupBoxParking.Controls.Add(this.maskedTextBoxParking);
             this.groupBoxParking.Controls.Add(this.labelParking);
-            this.groupBoxParking.Location = new System.Drawing.Point(780, 219);
+            this.groupBoxParking.Location = new System.Drawing.Point(787, 219);
             this.groupBoxParking.Name = "groupBoxParking";
             this.groupBoxParking.Size = new System.Drawing.Size(200, 219);
             this.groupBoxParking.TabIndex = 3;
             this.groupBoxParking.TabStop = false;
-            this.groupBoxParking.Text = "Забрать машину";
+            this.groupBoxParking.Text = "Забрать поезд";
             // 
             // pictureBoxTake
             // 
@@ -121,7 +100,7 @@
             // listBoxLevels
             // 
             this.listBoxLevels.FormattingEnabled = true;
-            this.listBoxLevels.Location = new System.Drawing.Point(790, 28);
+            this.listBoxLevels.Location = new System.Drawing.Point(787, 26);
             this.listBoxLevels.Name = "listBoxLevels";
             this.listBoxLevels.Size = new System.Drawing.Size(172, 121);
             this.listBoxLevels.TabIndex = 4;
@@ -130,22 +109,31 @@
             // labelLevels
             // 
             this.labelLevels.AutoSize = true;
-            this.labelLevels.Location = new System.Drawing.Point(854, 12);
+            this.labelLevels.Location = new System.Drawing.Point(843, 9);
             this.labelLevels.Name = "labelLevels";
             this.labelLevels.Size = new System.Drawing.Size(48, 13);
             this.labelLevels.TabIndex = 5;
             this.labelLevels.Text = "Уровни:";
             // 
+            // buttonSelectTrain
+            // 
+            this.buttonSelectTrain.Location = new System.Drawing.Point(817, 175);
+            this.buttonSelectTrain.Name = "buttonSelectTrain";
+            this.buttonSelectTrain.Size = new System.Drawing.Size(110, 23);
+            this.buttonSelectTrain.TabIndex = 6;
+            this.buttonSelectTrain.Text = "Добавить поезд";
+            this.buttonSelectTrain.UseVisualStyleBackColor = true;
+            this.buttonSelectTrain.Click += new System.EventHandler(this.buttonSelectTrain_Click);
+            // 
             // FormParking
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(984, 450);
+            this.ClientSize = new System.Drawing.Size(1004, 468);
+            this.Controls.Add(this.buttonSelectTrain);
             this.Controls.Add(this.labelLevels);
             this.Controls.Add(this.listBoxLevels);
             this.Controls.Add(this.groupBoxParking);
-            this.Controls.Add(this.ParkingLocomotive);
-            this.Controls.Add(this.ParkingMonorail);
             this.Controls.Add(this.pictureBoxParking);
             this.Name = "FormParking";
             this.Text = "Депо";
@@ -161,8 +149,6 @@
         #endregion
 
         private System.Windows.Forms.PictureBox pictureBoxParking;
-        private System.Windows.Forms.Button ParkingMonorail;
-        private System.Windows.Forms.Button ParkingLocomotive;
         private System.Windows.Forms.GroupBox groupBoxParking;
         private System.Windows.Forms.PictureBox pictureBoxTake;
         private System.Windows.Forms.Button buttonTake;
@@ -170,5 +156,6 @@
         private System.Windows.Forms.Label labelParking;
         private System.Windows.Forms.ListBox listBoxLevels;
         private System.Windows.Forms.Label labelLevels;
+        private System.Windows.Forms.Button buttonSelectTrain;
     }
 }

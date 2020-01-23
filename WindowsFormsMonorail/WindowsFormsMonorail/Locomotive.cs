@@ -57,19 +57,13 @@ namespace WindowsFormsMonorail
 
         public override void DrawMonorail(Graphics g)
         {
-            Pen pen = new Pen(Color.Black);
-            g.DrawEllipse(pen, _startPosX, _startPosY, 20, 20);
-            g.DrawEllipse(pen, _startPosX, _startPosY + 30, 20, 20);
-            g.DrawRectangle(pen, _startPosX, _startPosY + 10, 10, 30);
-            g.DrawRectangle(pen, _startPosX + 10, _startPosY - 1, 80, 52);
-
-            Brush monorail = new SolidBrush(Color.Gray);
+            Brush monorail = new SolidBrush(MainColor);
             g.FillEllipse(monorail, _startPosX, _startPosY, 20, 20);
             g.FillEllipse(monorail, _startPosX, _startPosY + 30, 20, 20);
             g.FillRectangle(monorail, _startPosX, _startPosY + 10, 10, 30);
-            g.FillRectangle(monorail, _startPosX + 10, _startPosY - 1, 80, 52);
+            g.FillRectangle(monorail, _startPosX + 10, _startPosY - 1, 80, 52); ;
 
-            Brush window = new SolidBrush(Color.Blue);
+            Brush window = new SolidBrush(Color.Black);
             g.FillRectangle(window, _startPosX, _startPosY + 10, 20, 20);
         }
     }

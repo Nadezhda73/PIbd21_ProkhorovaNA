@@ -15,5 +15,7 @@ namespace WindowsFormsMonorail
         void MoveTransport(Direction direction);
 
         void DrawMonorail(Graphics g);
+
+        void SetMainColor(Color color);
     }
 }

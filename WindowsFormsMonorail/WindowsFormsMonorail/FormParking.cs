@@ -19,6 +19,7 @@ namespace WindowsFormsMonorail
         /// <summary>
         /// Количество уровней-парковок
         /// </summary>
+        FormMonorailConfig form;
         private const int countLevel = 5;
         public FormParking()
         {
@@ -125,6 +126,27 @@ namespace WindowsFormsMonorail
             Draw();
         }
 
-        
+        private void buttonSelectTrain_Click(object sender, EventArgs e)
+        {
+            form = new FormMonorailConfig();
+            form.AddEvent(AddTrain);
+            form.Show();
+        }
+
+        private void AddTrain(ITransport train)
+        {
+            if (train != null && listBoxLevels.SelectedIndex > -1)
+            {
+                int place = parking[listBoxLevels.SelectedIndex] + train;
+                if (place > -1)
+                {
+                    Draw();
+                }
+                else
+                {
+                    MessageBox.Show("Не удалось поставить");
+                }
+            }
+        }
     }
 }
