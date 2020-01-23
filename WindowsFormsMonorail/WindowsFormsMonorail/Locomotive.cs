@@ -19,6 +19,17 @@ namespace WindowsFormsMonorail
             MainColor = mainColor;
         }
 
+        public Locomotive(string info)
+        {
+            string[] strs = info.Split(';');
+            if (strs.Length == 3)
+            {
+                MaxSpeed = Convert.ToInt32(strs[0]);
+                Weight = Convert.ToInt32(strs[1]);
+                MainColor = Color.FromName(strs[2]);
+            }
+        }
+
         public override void MoveTransport(Direction direction)
         {
             float step = MaxSpeed * 100 / Weight;
@@ -57,6 +68,7 @@ namespace WindowsFormsMonorail
 
         public override void DrawMonorail(Graphics g)
         {
+
             Brush monorail = new SolidBrush(MainColor);
             g.FillEllipse(monorail, _startPosX, _startPosY, 20, 20);
             g.FillEllipse(monorail, _startPosX, _startPosY + 30, 20, 20);
@@ -65,6 +77,11 @@ namespace WindowsFormsMonorail
 
             Brush window = new SolidBrush(Color.Black);
             g.FillRectangle(window, _startPosX, _startPosY + 10, 20, 20);
+        }
+
+        public override string ToString()
+        {
+            return MaxSpeed + ";" + Weight + ";" + MainColor.Name;
         }
     }
 }

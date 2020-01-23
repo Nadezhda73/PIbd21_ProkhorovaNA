@@ -9,36 +9,18 @@ namespace WindowsFormsMonorail
 {
     public class Parking<T> where T : class, ITransport
     {
-        /// <summary>
-        /// Массив объектов, которые храним
-        /// </summary>
         private Dictionary<int, T> _places;
-        /// <summary>
-        /// Максимальное количество мест на парковке
-        /// </summary>
+
         private int _maxCount;
-        /// <summary>
-        /// Ширина окна отрисовки
-        /// </summary>
+
         private int PictureWidth { get; set; }
-        /// <summary>
-        /// Высота окна отрисовки
-        /// </summary>
+
         private int PictureHeight { get; set; }
-        /// <summary>
-        /// Размер парковочного места (ширина)
-        /// </summary>
+
         private const int _placeSizeWidth = 210;
-        /// <summary>
-        /// Размер парковочного места (высота)
-        /// </summary>
+
         private const int _placeSizeHeight = 80;
-        /// <summary>
-        /// Конструктор
-        /// </summary>
-        /// <param name="sizes">Количество мест на парковке</param>
-        /// <param name="pictureWidth">Рамзер парковки - ширина</param>
-        /// <param name="pictureHeight">Рамзер парковки - высота</param>
+
         public Parking(int sizes, int pictureWidth, int pictureHeight)
         {
             _maxCount = sizes;
@@ -46,14 +28,8 @@ namespace WindowsFormsMonorail
             PictureWidth = pictureWidth;
             PictureHeight = pictureHeight;
         }
-        /// <summary>
-        /// Перегрузка оператора сложения
-        /// Логика действия: на парковку добавляется автомобиль
-        /// </summary>
-        /// <param name="p">Парковка</param>
-        /// <param name="car">Добавляемый автомобиль</param>
-        /// <returns></returns>
-        public static int operator +(Parking<T> p, T car)
+
+        public static int operator +(Parking<T> p, T train)
         {
             if (p._places.Count == p._maxCount)
             {
@@ -63,10 +39,8 @@ namespace WindowsFormsMonorail
             {
                 if (p.CheckFreePlace(i))
                 {
-                    p._places.Add(i, car);
-                    p._places[i].SetPosition(5 + i / 5 * _placeSizeWidth + 5,
-                     i % 5 * _placeSizeHeight + 15, p.PictureWidth,
-                    p.PictureHeight);
+                    p._places.Add(i, train);
+                    p._places[i].SetPosition(5 + i / 5 * _placeSizeWidth + 5, i % 5 * _placeSizeHeight + 15, p.PictureWidth, p.PictureHeight);
                     return i;
                 }
             }
@@ -76,20 +50,18 @@ namespace WindowsFormsMonorail
         {
             if (!p.CheckFreePlace(index))
             {
-                T car = p._places[index];
+                T train = p._places[index];
                 p._places.Remove(index);
-                return car;
+                return train;
             }
             return null;
         }
+
         private bool CheckFreePlace(int index)
         {
             return !_places.ContainsKey(index);
         }
-        /// <summary>
-        /// Метод отрисовки парковки
-        /// </summary>
-        /// <param name="g"></param>
+
         public void Draw(Graphics g)
         {
             DrawMarking(g);
@@ -99,10 +71,7 @@ namespace WindowsFormsMonorail
                 _places[keys[i]].DrawMonorail(g);
             }
         }
-        /// <summary>
-        /// Метод отрисовки разметки парковочных мест
-        /// </summary>
-        /// <param name="g"></param>
+
         private void DrawMarking(Graphics g)
         {
             Pen pen = new Pen(Color.Black, 3);
@@ -115,6 +84,26 @@ namespace WindowsFormsMonorail
                     i * _placeSizeWidth + 110, j * _placeSizeHeight);
                 }
                 g.DrawLine(pen, i * _placeSizeWidth, 0, i * _placeSizeWidth, 400);
+            }
+        }
+
+        public T this[int ind]
+        {
+            get
+            {
+                if (_places.ContainsKey(ind))
+                {
+                    return _places[ind];
+                }
+                return null;
+            }
+            set
+            {
+                if (CheckFreePlace(ind))
+                {
+                    _places.Add(ind, value);
+                    _places[ind].SetPosition(5 + ind / 5 * _placeSizeWidth + 5, ind % 5 * _placeSizeHeight + 15, PictureWidth, PictureHeight);
+                }
             }
         }
     }
