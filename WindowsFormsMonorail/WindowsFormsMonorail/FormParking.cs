@@ -12,13 +12,8 @@ namespace WindowsFormsMonorail
 {
     public partial class FormParking : Form
     {
-        /// <summary>
-        /// Объект от класса многоуровневой парковки
-        /// </summary>
         MultiLevelParking parking;
-        /// <summary>
-        /// Количество уровней-парковок
-        /// </summary>
+
         FormMonorailConfig form;
         private const int countLevel = 5;
         public FormParking()
@@ -146,6 +141,37 @@ namespace WindowsFormsMonorail
                 {
                     MessageBox.Show("Не удалось поставить");
                 }
+            }
+        }
+
+        private void сохранитьToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                if (parking.SaveData(saveFileDialog.FileName))
+                {
+                    MessageBox.Show("Сохранение прошло успешно", "Результат", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Не сохранилось", "Результат", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private void загрузитьToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                if (parking.LoadData(openFileDialog.FileName))
+                {
+                    MessageBox.Show("Загрузили", "Результат", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Не загрузили", "Результат", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                Draw();
             }
         }
     }

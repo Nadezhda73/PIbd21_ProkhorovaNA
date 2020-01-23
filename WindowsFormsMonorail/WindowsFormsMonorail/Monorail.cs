@@ -27,10 +27,23 @@ namespace WindowsFormsMonorail
             SideStrip = sideStripe;
         }
 
+        public Monorail(string info) : base(info)
+        {
+            string[] strs = info.Split(';');
+            if (strs.Length == 6)
+            {
+                MaxSpeed = Convert.ToInt32(strs[0]);
+                Weight = Convert.ToInt32(strs[1]);
+                MainColor = Color.FromName(strs[2]);
+                DopColor = Color.FromName(strs[3]);
+                Window = Convert.ToBoolean(strs[4]);
+                SideStrip = Convert.ToBoolean(strs[5]);
+            }
+        }
+
         public override void DrawMonorail(Graphics g)
         {
             Pen pen = new Pen(Color.Black);
-            Brush dopBrush = new SolidBrush(Color.Black);
             base.DrawMonorail(g);
 
             if (Window)
@@ -52,6 +65,11 @@ namespace WindowsFormsMonorail
         public void SetDopColor(Color color)
         {
             DopColor = color;
+        }
+
+        public override string ToString()
+        {
+            return base.ToString() + ";" + DopColor.Name + ";" + Window + ";" + SideStrip;
         }
     }
 }
