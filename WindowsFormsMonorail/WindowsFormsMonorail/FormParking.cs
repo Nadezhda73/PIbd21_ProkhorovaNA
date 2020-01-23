@@ -12,47 +12,79 @@ namespace WindowsFormsMonorail
 {
     public partial class FormParking : Form
     {
-        Parking<ITransport> parking;
+        /// <summary>
+        /// Объект от класса многоуровневой парковки
+        /// </summary>
+        MultiLevelParking parking;
+        /// <summary>
+        /// Количество уровней-парковок
+        /// </summary>
+        private const int countLevel = 5;
         public FormParking()
         {
             InitializeComponent();
-            parking = new Parking<ITransport>(20, pictureBoxParking.Width,
+            parking = new MultiLevelParking(countLevel, pictureBoxParking.Width,
            pictureBoxParking.Height);
-            Draw();
+            //заполнение listBox
+            for (int i = 0; i < countLevel; i++)
+            {
+                listBoxLevels.Items.Add("Уровень " + (i + 1));
+            }
+            listBoxLevels.SelectedIndex = 0;
         }
 
         private void Draw()
         {
-            Bitmap bmp = new Bitmap(pictureBoxParking.Width, pictureBoxParking.Height);
-            Graphics gr = Graphics.FromImage(bmp);
-            parking.Draw(gr);
-            pictureBoxParking.Image = bmp;
+            if (listBoxLevels.SelectedIndex > -1)
+            {
+                Bitmap bmp = new Bitmap(pictureBoxParking.Width,
+                    pictureBoxParking.Height);
+                Graphics gr = Graphics.FromImage(bmp);
+                parking[listBoxLevels.SelectedIndex].Draw(gr);
+                pictureBoxParking.Image = bmp;
+            }
         }
+
 
         private void ParkingLocomotive_Click(object sender, EventArgs e)
         {
-            ColorDialog dialog = new ColorDialog();
-            if (dialog.ShowDialog() == DialogResult.OK)
+            if (listBoxLevels.SelectedIndex > -1)
             {
-                var train = new Locomotive(100, 1000, dialog.Color);
-                int place = parking + train;
-                Draw();
+                ColorDialog dialog = new ColorDialog();
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    var train = new Locomotive(100, 1000, dialog.Color);
+                    int place = parking[listBoxLevels.SelectedIndex] + train;
+                    if (place == -1)
+                    {
+                        MessageBox.Show("Нет свободных мест", "Ошибка",
+                       MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    Draw();
+                }
             }
         }
 
         private void ParkingMonorail_Click(object sender, EventArgs e)
         {
-
-            ColorDialog dialog = new ColorDialog();
-            if (dialog.ShowDialog() == DialogResult.OK)
+            if (listBoxLevels.SelectedIndex > -1)
             {
-                ColorDialog dialogDop = new ColorDialog();
-                if (dialogDop.ShowDialog() == DialogResult.OK)
+                ColorDialog dialog = new ColorDialog();
+                if (dialog.ShowDialog() == DialogResult.OK)
                 {
-                    var train = new Monorail(100, 1000, dialog.Color, dialogDop.Color,
-                       true, true);
-                    int place = parking + train;
-                    Draw();
+                    ColorDialog dialogDop = new ColorDialog();
+                    if (dialogDop.ShowDialog() == DialogResult.OK)
+                    {
+                        var train = new Monorail(100, 1000, dialog.Color,
+                       dialogDop.Color, true, true);
+                        int place = parking[listBoxLevels.SelectedIndex] + train;
+                        if (place == -1)
+                        {
+                            MessageBox.Show("Нет свободных мест", "Ошибка",
+                           MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                        Draw();
+                    }
                 }
             }
         }
@@ -61,27 +93,38 @@ namespace WindowsFormsMonorail
 
         private void buttonTake_Click(object sender, EventArgs e)
         {
-            if (maskedTextBoxParking.Text != "")
+            if (listBoxLevels.SelectedIndex > -1)
             {
-                var car = parking - Convert.ToInt32(maskedTextBoxParking.Text);
-                if (car != null)
+                if (maskedTextBoxParking.Text != "")
                 {
-                    Bitmap bmp = new Bitmap(pictureBoxTake.Width,
-                   pictureBoxTake.Height);
-                    Graphics gr = Graphics.FromImage(bmp);
-                    car.SetPosition(5, 5, pictureBoxTake.Width,
-                   pictureBoxTake.Height);
-                    car.DrawMonorail(gr);
-                    pictureBoxTake.Image = bmp;
+                    var train = parking[listBoxLevels.SelectedIndex] -
+                   Convert.ToInt32(maskedTextBoxParking.Text);
+                    if (train != null)
+                    {
+                        Bitmap bmp = new Bitmap(pictureBoxTake.Width,
+                       pictureBoxTake.Height);
+                        Graphics gr = Graphics.FromImage(bmp);
+                        train.SetPosition(5, 5, pictureBoxTake.Width,
+                       pictureBoxTake.Height);
+                        train.DrawMonorail(gr);
+                        pictureBoxTake.Image = bmp;
+                    }
+                    else
+                    {
+                        Bitmap bmp = new Bitmap(pictureBoxTake.Width,
+                       pictureBoxTake.Height);
+                        pictureBoxTake.Image = bmp;
+                    }
+                    Draw();
                 }
-                else
-                {
-                    Bitmap bmp = new Bitmap(pictureBoxTake.Width,
-                   pictureBoxTake.Height);
-                    pictureBoxTake.Image = bmp;
-                }
-                Draw();
             }
         }
+
+        private void listBoxLevels_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Draw();
+        }
+
+        
     }
 }
