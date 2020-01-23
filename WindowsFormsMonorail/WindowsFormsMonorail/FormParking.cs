@@ -104,7 +104,7 @@ namespace WindowsFormsMonorail
                         Graphics gr = Graphics.FromImage(bmp);
                         train.SetPosition(5, 5, pictureBoxTake.Width, pictureBoxTake.Height);
                         train.DrawMonorail(gr);
-                        logger.Info($"Изъят поезд {train.ToString()} с места {maskedTextBoxParking.Text}");
+                        logger.Info($"Изъята поезд {train.ToString()} с места {maskedTextBoxParking.Text}");
                         pictureBoxTake.Image = bmp;
                         Draw();
                     }
@@ -153,11 +153,17 @@ namespace WindowsFormsMonorail
                     logger.Warn(ex.Message);
                     MessageBox.Show(ex.Message, "Переполнение", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
+                catch (ParkingAlreadyHaveException ex)
+                {
+                    logger.Warn(ex.Message);
+                    MessageBox.Show(ex.Message, "Дублирование", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
                 catch (Exception ex)
                 {
                     logger.Warn(ex.Message);
                     MessageBox.Show(ex.Message, "Неизвестная ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
+
             }
         }
 
@@ -202,6 +208,13 @@ namespace WindowsFormsMonorail
                 }
                 Draw();
             }
+        }
+
+        private void buttonSort_Click(object sender, EventArgs e)
+        {
+            parking.Sort();
+            Draw();
+            logger.Info("Сортировка уровней");
         }
     }
 }

@@ -7,7 +7,7 @@ using System.Drawing;
 
 namespace WindowsFormsMonorail
 {
-    public class Monorail : Locomotive
+    public class Monorail : Locomotive, IComparable<Monorail>, IEquatable<Monorail>
     {
 
         public Color DopColor { private set; get; }
@@ -70,6 +70,74 @@ namespace WindowsFormsMonorail
         public override string ToString()
         {
             return base.ToString() + ";" + DopColor.Name + ";" + Window + ";" + SideStrip;
+        }
+
+        public int CompareTo(Monorail other)
+        {
+            var res = (this is Locomotive).CompareTo(other is Locomotive);
+            if (res != 0)
+            {
+                return res;
+            }
+            if (DopColor != other.DopColor)
+            {
+                DopColor.Name.CompareTo(other.DopColor.Name);
+            }
+            if (Window != other.Window)
+            {
+                return Window.CompareTo(other.Window);
+            }
+            if (SideStrip != other.SideStrip)
+            {
+                return SideStrip.CompareTo(other.SideStrip);
+            }
+
+            return 0;
+        }
+
+        public bool Equals(Monorail other)
+        {
+            var res = (this as Locomotive).Equals(other as Locomotive);
+            if (!res)
+            {
+                return res;
+            }
+            if (GetType().Name != other.GetType().Name)
+            {
+                return false;
+            }
+            if (DopColor != other.DopColor)
+            {
+                return false;
+            }
+            if (Window != other.Window)
+            {
+                return false;
+            }
+            if (SideStrip != other.SideStrip)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public override bool Equals(Object obj)
+        {
+            if (obj == null) { return false; }
+
+            if (!(obj is Monorail boatObj))
+            {
+                return false;
+            }
+            else
+            {
+                return Equals(boatObj);
+            }
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
     }
 }
